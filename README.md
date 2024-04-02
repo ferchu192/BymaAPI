@@ -1,6 +1,6 @@
 # PyOBD
 ## Overview
-PyOBD es una API para conectar cualquier script de Python con datos del mercado con 20 minutos de retraso provistos por Open BYMA Data, además permite la descarga de datos histórico. Fue desarrollada en conjunto por [Nacho Herrera](https://github.com/nacho-herrera), [St1tch](https://twitter.com/St1tch_BL) y [Franco Lamas](https://www.linkedin.com/in/franco-lamas/).
+PyOBD es una API para conectar cualquier script de Python con datos del mercado con 20 minutos de retraso provistos por Open BYMA Data, además permite la descarga de datos histórico. Fue desarrollada en conjunto por [Nacho Herrera](https://github.com/nacho-herrera), [St1tch](https://twitter.com/St1tch_BL) y [Franco Lamas](https://www.linkedin.com/in/franco-lamas/). 
 
 # Uso
 ## Inicialización
