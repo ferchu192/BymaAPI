@@ -92,7 +92,7 @@ class openBYMAdata():
         # settlementPrice: float
         # quantityBid: int
     def get_bluechips(self):
-        data = '{"excludeZeroPxAndQty":false,"T2":true,"T1":false,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
+        data = '{"excludeZeroPxAndQty":false,"T1":true,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
         response = self.__s.post('https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/leading-equity', headers=self.__headers, data=data)
         return json.loads(response.text)['data']
 
@@ -124,7 +124,7 @@ class openBYMAdata():
         # settlementPrice: float
         # quantityBid: int
     def get_galpones(self):
-        data = '{"excludeZeroPxAndQty":true,"T2":true,"T1":false,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
+        data = '{"excludeZeroPxAndQty":true,"T2":false,"T1":true,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
         response = self.__s.post('https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/general-equity', headers=self.__headers, data=data)
         return json.loads(response.text)['data']
 
@@ -156,7 +156,7 @@ class openBYMAdata():
         # settlementPrice: float
         # quantityBid: float 
     def get_cedears(self):
-        data = '{"excludeZeroPxAndQty":false,"T2":true,"T1":false,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
+        data = '{"excludeZeroPxAndQty":false,"T2":false,"T1":true,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
         response = self.__s.post('https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/cedears', headers=self.__headers, data=data)
         return json.loads(response.text)
 
@@ -226,7 +226,7 @@ class openBYMAdata():
         # settlementPrice: float
         # quantityBid: int
     def get_bonds(self):
-        data = '{"excludeZeroPxAndQty":true,"T2":true,"T1":false,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
+        data = '{"excludeZeroPxAndQty":true,"T2":false,"T1":true,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
         response = self.__s.post('https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/public-bonds', headers=self.__headers, data=data)
         
         bonds = json.loads(response.text)['data']
@@ -262,7 +262,7 @@ class openBYMAdata():
         # settlementPrice: float
         # quantityBid: float
     def get_short_term_bonds(self):
-        data = '{"excludeZeroPxAndQty":true,"T2":true,"T1":false,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
+        data = '{"excludeZeroPxAndQty":true,"T2":false,"T1":true,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
         response = self.__s.post('https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/lebacs', headers=self.__headers, data=data)
         return json.loads(response.text)['data']   
 
@@ -296,7 +296,7 @@ class openBYMAdata():
         # settlementPrice: float
         # quantityBid: float 
     def get_corporateBonds(self):
-        data = '{"excludeZeroPxAndQty":true,"T2":true,"T1":false,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
+        data = '{"excludeZeroPxAndQty":true,"T2":false,"T1":true,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
         response = self.__s.post('https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/negociable-obligations', headers=self.__headers, data=data)
         return json.loads(response.text)     
     
