@@ -298,8 +298,14 @@ class openBYMAdata():
     def get_corporateBonds(self):
         data = '{"excludeZeroPxAndQty":true,"T2":false,"T1":true,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
         response = self.__s.post('https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/negociable-obligations', headers=self.__headers, data=data)
-        return json.loads(response.text)     
-    
+        return json.loads(response.text)
+
+    # https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/chart/historical-series/history?symbol=AL30%2024HS&resolution=D&from=1690722774&to=1724591634
+    def price_at_date(self, date, symbol):
+        params = f'symbol={symbol}%2024HS&resolution=D  &from={date}&to={date}'
+        response = self.__s.get(f'https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/chart/historical-series/history?{params}', verify=False)
+        return json.loads(response.text)['c'][0]
+
     # function get_futures(self)
     # Each future has:
         # tradeVolume: int
