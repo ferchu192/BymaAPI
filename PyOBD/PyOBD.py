@@ -21,6 +21,7 @@ class openBYMAdata():
         self.__filter_columns_fixedIncome=["symbol","settlementType","quantityBid","bidPrice","offerPrice","quantityOffer","settlementPrice","closingPrice","imbalance","openingPrice","tradingHighPrice","tradingLowPrice","previousClosingPrice","volumeAmount","volume","numberOfOrders","tradeHour","securityType","maturityDate"]
 
         self.__s = requests.session()
+        self.__s.verify = False  # Deshabilitar verificación SSL globalmente
         self.__s.get('https://open.bymadata.com.ar/#/dashboard', verify=False)
 
         self.__headers = {
@@ -38,12 +39,12 @@ class openBYMAdata():
             'Referer': 'https://open.bymadata.com.ar/',
             'Accept-Language': 'es-US,es-419;q=0.9,es;q=0.8,en;q=0.7',
         }
-        response = self.__s.get('https://open.bymadata.com.ar/assets/api/langs/es.json', headers=self.__headers)
+        response = self.__s.get('https://open.bymadata.com.ar/assets/api/langs/es.json', headers=self.__headers, verify=False)
         self.__diction=json.loads(response.text)
 
     def isworkingDay(self):
         data = '{}'
-        response = self.__s.post('https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/market-time', headers=self.__headers, data=data)
+        response = self.__s.post('https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/market-time', headers=self.__headers, data=data, verify=False)
         loaded= json.loads(response.content)
         return bool(loaded["isWorkingDay"])
 
@@ -92,7 +93,7 @@ class openBYMAdata():
         # settlementPrice: float
         # quantityBid: int
     def get_bluechips(self):
-        data = '{"excludeZeroPxAndQty":false,"T1":true,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
+        data = '{"excludeZeroPxAndQty":false,"T2":true,"T1":false,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
         response = self.__s.post('https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/leading-equity', headers=self.__headers, data=data)
         return json.loads(response.text)['data']
 
@@ -124,7 +125,7 @@ class openBYMAdata():
         # settlementPrice: float
         # quantityBid: int
     def get_galpones(self):
-        data = '{"excludeZeroPxAndQty":true,"T2":false,"T1":true,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
+        data = '{"excludeZeroPxAndQty":true,"T2":true,"T1":false,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
         response = self.__s.post('https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/general-equity', headers=self.__headers, data=data)
         return json.loads(response.text)['data']
 
@@ -156,7 +157,7 @@ class openBYMAdata():
         # settlementPrice: float
         # quantityBid: float 
     def get_cedears(self):
-        data = '{"excludeZeroPxAndQty":false,"T2":false,"T1":true,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
+        data = '{"excludeZeroPxAndQty":false,"T2":true,"T1":false,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
         response = self.__s.post('https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/cedears', headers=self.__headers, data=data)
         return json.loads(response.text)
 
@@ -226,7 +227,7 @@ class openBYMAdata():
         # settlementPrice: float
         # quantityBid: int
     def get_bonds(self):
-        data = '{"excludeZeroPxAndQty":true,"T2":false,"T1":true,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
+        data = '{"excludeZeroPxAndQty":true,"T2":true,"T1":false,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
         response = self.__s.post('https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/public-bonds', headers=self.__headers, data=data)
         
         bonds = json.loads(response.text)['data']
@@ -262,7 +263,7 @@ class openBYMAdata():
         # settlementPrice: float
         # quantityBid: float
     def get_short_term_bonds(self):
-        data = '{"excludeZeroPxAndQty":true,"T2":false,"T1":true,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
+        data = '{"excludeZeroPxAndQty":true,"T2":true,"T1":false,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
         response = self.__s.post('https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/lebacs', headers=self.__headers, data=data)
         return json.loads(response.text)['data']   
 
@@ -296,16 +297,10 @@ class openBYMAdata():
         # settlementPrice: float
         # quantityBid: float 
     def get_corporateBonds(self):
-        data = '{"excludeZeroPxAndQty":true,"T2":false,"T1":true,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
+        data = '{"excludeZeroPxAndQty":true,"T2":true,"T1":false,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
         response = self.__s.post('https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/negociable-obligations', headers=self.__headers, data=data)
-        return json.loads(response.text)
-
-    # https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/chart/historical-series/history?symbol=AL30%2024HS&resolution=D&from=1690722774&to=1724591634
-    def price_at_date(self, date, symbol):
-        params = f'symbol={symbol}%2024HS&resolution=D  &from={date}&to={date}'
-        response = self.__s.get(f'https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/chart/historical-series/history?{params}', verify=False)
-        return json.loads(response.text)['c'][0]
-
+        return json.loads(response.text)     
+    
     # function get_futures(self)
     # Each future has:
         # tradeVolume: int
