@@ -227,7 +227,7 @@ class openBYMAdata():
         # settlementPrice: float
         # quantityBid: int
     def get_bonds(self):
-        data = '{"excludeZeroPxAndQty":true,"T2":true,"T1":false,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
+        data = '{"T1": true, "T0": false, "Content-Type": "application/json, text/plain"}'
         response = self.__s.post('https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/public-bonds', headers=self.__headers, data=data)
         
         bonds = json.loads(response.text)['data']
