@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
+from datetime import datetime, time as dt_time
 
+TIMEZONE = pytz.timezone('America/Argentina/Buenos_Aires')
 
 def obtener_cotizacion_dolar(url, nombre_dolar):
     """
@@ -53,10 +55,13 @@ def obtener_cotizacion_dolar(url, nombre_dolar):
                 precio = precio_text
 
         # Construir el resultado
+        now = datetime.now(TIMEZONE)
+
         resultado = {
             'dollar': nombre_dolar,
             'precio': precio,
-            'variacion': variacion_text
+            'variacion': variacion_text,
+            'time': now.strftime("%H:%M:%S")
         }
 
         return resultado
