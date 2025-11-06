@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime, time as dt_time
+import pytz
 
 TIMEZONE = pytz.timezone('America/Argentina/Buenos_Aires')
 
