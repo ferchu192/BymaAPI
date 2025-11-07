@@ -14,7 +14,7 @@ def obtener_cotizacion_dolar(url, nombre_dolar):
         nombre_dolar (str): Nombre del tipo de dólar (Oficial, Blue, MEP, CCL)
 
     Returns:
-        dict: Diccionario con el formato {dollar: str, precio: float, variacion: str}
+        dict: Diccionario con el formato {dollar: str, compra: float, venta: float, variacion: str, time: str}
     """
     try:
         # Realizar la petición HTTP
@@ -27,14 +27,25 @@ def obtener_cotizacion_dolar(url, nombre_dolar):
         # Parsear el HTML
         soup = BeautifulSoup(response.content, 'html.parser')
 
+        # Buscar todos los elementos con la clase markets-online__card__title
+        card_titles = soup.find_all('div', class_='markets-online__card__title')
+
+        # Buscar el precio de compra (4to elemento con la clase)
+        precio_compra_text = None
+        if len(card_titles) >= 4:
+            compra_parent = card_titles[3].parent
+            divs = compra_parent.find_all('div')
+            if len(divs) > 1:
+                precio_compra_text = divs[1].text.strip()
+
         # Buscar el valor de venta
         venta_element = soup.find('div', class_='markets-online__card--sell')
-        precio_text = None
+        precio_venta_text = None
         if venta_element:
             # Buscar el div que contiene el precio (segundo div dentro)
             divs = venta_element.find_all('div')
             if len(divs) > 1:
-                precio_text = divs[1].text.strip()
+                precio_venta_text = divs[1].text.strip()
 
         # Buscar la variación
         variacion_element = soup.find('div', class_='markets-online__card--percentage')
@@ -45,22 +56,33 @@ def obtener_cotizacion_dolar(url, nombre_dolar):
             if len(divs) > 1:
                 variacion_text = divs[1].text.strip()
 
-        # Procesar el precio (remover $ y . para convertir a float)
-        precio = None
-        if precio_text:
-            # Remover el símbolo $ y los puntos de miles
-            precio_clean = precio_text.replace('$', '').replace('.', '').replace(',', '.').strip()
+        # Procesar el precio de compra
+        precio_compra = None
+        if precio_compra_text:
+            precio_clean = precio_compra_text.replace('$', '').replace('.', '').replace(',', '.').strip()
             try:
-                precio = float(precio_clean)
+                precio_compra = float(precio_clean)
             except ValueError:
-                precio = precio_text
+                precio_compra = precio_compra_text
+
+        # Procesar el precio de venta
+        precio_venta = None
+        if precio_venta_text:
+            # Remover el símbolo $ y los puntos de miles
+            precio_clean = precio_venta_text.replace('$', '').replace('.', '').replace(',', '.').strip()
+            try:
+                precio_venta = float(precio_clean)
+            except ValueError:
+                precio_venta = precio_venta_text
 
         # Construir el resultado
         now = datetime.now(TIMEZONE)
 
         resultado = {
             'dollar': nombre_dolar,
-            'precio': precio,
+            'compra': precio_compra,
+            'venta': precio_venta,
+            'precio': precio_venta,
             'variacion': variacion_text,
             'time': now.strftime("%H:%M:%S")
         }
@@ -71,6 +93,8 @@ def obtener_cotizacion_dolar(url, nombre_dolar):
         print(f"Error al realizar la petición para {nombre_dolar}: {e}")
         return {
             'dollar': nombre_dolar,
+            'compra': None,
+            'venta': None,
             'precio': None,
             'variacion': None,
             'error': str(e)
@@ -79,6 +103,8 @@ def obtener_cotizacion_dolar(url, nombre_dolar):
         print(f"Error inesperado para {nombre_dolar}: {e}")
         return {
             'dollar': nombre_dolar,
+            'compra': None,
+            'venta': None,
             'precio': None,
             'variacion': None,
             'error': str(e)
@@ -92,10 +118,10 @@ def obtener_todos_los_dolares():
     Returns:
         dict: Diccionario con las cotizaciones de cada tipo de dólar
               Formato: {
-                  'Oficial': {dollar: 'Oficial', precio: float, variacion: str},
-                  'Blue': {dollar: 'Blue', precio: float, variacion: str},
-                  'MEP': {dollar: 'MEP', precio: float, variacion: str},
-                  'CCL': {dollar: 'CCL', precio: float, variacion: str}
+                  'Oficial': {dollar: 'Oficial', compra: float, venta: float, variacion: str, time: str},
+                  'Blue': {dollar: 'Blue', compra: float, venta: float, variacion: str, time: str},
+                  'MEP': {dollar: 'MEP', compra: float, venta: float, variacion: str, time: str},
+                  'CCL': {dollar: 'CCL', compra: float, venta: float, variacion: str, time: str}
               }
     """
     # Definir las URLs y nombres de cada tipo de dólar
@@ -124,8 +150,10 @@ if __name__ == "__main__":
     for tipo, datos in resultado.items():
         if 'error' not in datos:
             print(f"{tipo}:")
-            print(f"  Precio: ${datos['precio']}")
+            print(f"  Compra: ${datos['compra']}")
+            print(f"  Venta: ${datos['venta']}")
             print(f"  Variación: {datos['variacion']}")
+            print(f"  Hora: {datos['time']}")
         else:
             print(f"{tipo}: Error - {datos['error']}")
         print()
