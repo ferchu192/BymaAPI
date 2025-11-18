@@ -265,7 +265,44 @@ class openBYMAdata():
     def get_short_term_bonds(self):
         data = '{"excludeZeroPxAndQty":true,"T2":true,"T1":false,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
         response = self.__s.post('https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/lebacs', headers=self.__headers, data=data)
-        return json.loads(response.text)['data']   
+        return json.loads(response.text)['data']
+    
+    # functionget_cauciones(self)
+        # tradeVolume: int
+        # symbol: str
+        # imbalance: float
+        # previousSettlementPrice: float
+        # offerPrice: float
+        # openInterest: int
+        # vwap: float
+        # numberOfOrders: int
+        # openingPrice: float
+        # tickDirection: int
+        # underlyingSymbol: str
+        # securityDesc: str
+        # securitySubType: str
+        # maturityDate: str
+        # previousClosingPrice: float
+        # settlementType: str
+        # quantityOffer: int
+        # tradingHighPrice: float
+        # denominationCcy: str
+        # bidPrice: float
+        # tradingLowPrice: float
+        # market: str
+        # volumeAmount: float
+        # volume: int
+        # trade: float
+        # daysToMaturity: int
+        # tradeHour: str
+        # securityType: str
+        # closingPrice: float
+        # settlementPrice: float
+        # quantityBid: int
+    def get_cauciones(self):
+        data = '{"excludeZeroPxAndQty":true, "Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
+        response = self.__s.post('https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/cauciones', headers=self.__headers, data=data)
+        return json.loads(response.text)
 
     # function get_corporateBonds(self)
     # Each corporateBond has:
