@@ -93,7 +93,7 @@ class openBYMAdata():
         # settlementPrice: float
         # quantityBid: int
     def get_bluechips(self):
-        data = '{"excludeZeroPxAndQty":false,"T2":true,"T1":false,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
+        data = '{"excludeZeroPxAndQty":true,"T2":false,"T1":true,"T0":false,"Content-Type":"application/json, text-plain"}' ## excluir especies sin precio y cantidad, determina plazo de listado
         response = self.__s.post('https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/leading-equity', headers=self.__headers, data=data)
         return json.loads(response.text)['data']
 
@@ -125,7 +125,7 @@ class openBYMAdata():
         # settlementPrice: float
         # quantityBid: int
     def get_galpones(self):
-        data = '{"excludeZeroPxAndQty":true,"T2":true,"T1":false,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
+        data = '{"excludeZeroPxAndQty":true,"T1":true,"T0":false,"Content-Type":"application/json, text/plain"}' ## excluir especies sin precio y cantidad, determina plazo de listado
         response = self.__s.post('https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/general-equity', headers=self.__headers, data=data)
         return json.loads(response.text)['data']
 
@@ -157,7 +157,7 @@ class openBYMAdata():
         # settlementPrice: float
         # quantityBid: float 
     def get_cedears(self):
-        data = '{"excludeZeroPxAndQty":false,"T2":true,"T1":false,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
+        data = '{"excludeZeroPxAndQty":true, "T1":true,"T0":false,"Content-Type":"application/json, text/plain"}' ## excluir especies sin precio y cantidad, determina plazo de listado
         response = self.__s.post('https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/cedears', headers=self.__headers, data=data)
         return json.loads(response.text)
 
@@ -263,7 +263,7 @@ class openBYMAdata():
         # settlementPrice: float
         # quantityBid: float
     def get_short_term_bonds(self):
-        data = '{"excludeZeroPxAndQty":true,"T2":true,"T1":false,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
+        data = '{"excludeZeroPxAndQty":true, "T1":true,"T0":false,"Content-Type":"application/json, text/plain"}' ## excluir especies sin precio y cantidad, determina plazo de listado
         response = self.__s.post('https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/lebacs', headers=self.__headers, data=data)
         return json.loads(response.text)['data']
     
@@ -300,7 +300,7 @@ class openBYMAdata():
         # settlementPrice: float
         # quantityBid: int
     def get_cauciones(self):
-        data = '{"excludeZeroPxAndQty":true, "Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
+        data = '{"excludeZeroPxAndQty":true, "Content-Type":"application/json, text/plain"}' ## excluir especies sin precio y cantidad, determina plazo de listado
         response = self.__s.post('https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/cauciones', headers=self.__headers, data=data)
         return json.loads(response.text)
 
@@ -334,9 +334,15 @@ class openBYMAdata():
         # settlementPrice: float
         # quantityBid: float 
     def get_corporateBonds(self):
-        data = '{"excludeZeroPxAndQty":true,"T2":true,"T1":false,"T0":false,"Content-Type":"application/json"}' ## excluir especies sin precio y cantidad, determina plazo de listado
+        data = '{"excludeZeroPxAndQty":true, "T1":true,"T0":false,"Content-Type":"application/json, text/plain"}' ## excluir especies sin precio y cantidad, determina plazo de listado
         response = self.__s.post('https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/negociable-obligations', headers=self.__headers, data=data)
-        return json.loads(response.text)     
+        return json.loads(response.text) 
+
+    def get_general(self, symbol):
+        data = '{"Content-Type":"application/json, text/plain", "symbol": {symbol} }' ## excluir especies sin precio y cantidad, determina plazo de listado
+        response = self.__s.post('https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/bnown/fichatecnica/especies/general', headers=self.__headers, data=data)
+        print(f'response: {response.text}')
+        return json.loads(response.text)['data']  
     
     # function get_futures(self)
     # Each future has:
@@ -421,20 +427,11 @@ class openBYMAdata():
         return df
 
     def iamc_bonds(self):
-        data = '{"page_number":1, "page_size":500, "Content-Type":"application/json"}'
+        data = '{"page_number":1, "Content-Type":"application/json"}'
         response = self.__s.post('https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/bnown/seriesHistoricas/iamc/bonos', headers=self.__headers, data=data)
-        bonos_iamc = json.loads(response.text)
-        df_bonos_iamc = pd.DataFrame(bonos_iamc['data'])
-        df_bonos_iamc
-        colList=df_bonos_iamc.columns.values
-        error=0
-        for i in range(len(colList)):
-            try:
-                colList[i]=self.__diction[colList[i]]
-            except:
-                error=error+1
-        df_bonos_iamc.columns=colList
-        return df_bonos_iamc.drop(["notas"],axis=1)
+        print(f'iamc_bonds: {response.text}')
+        return json.loads(response.text)     
+
 
     def __convert_to_numeric_columns(self,df, columns):
         for col in columns:
